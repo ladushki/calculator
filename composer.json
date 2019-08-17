@@ -1,0 +1,73 @@
+{
+    "name": "ladushky\/Calculator",
+    "description": "Calculator",
+    "type": "library",
+    "keywords": ["php"],
+    "homepage": "https://github.com/ladushky/Calculator",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Larissa",
+            "email": "larissa.bobkova@gmail.com",
+            "homepage": "http://calculator.test"
+        }
+    ],
+    "support": {
+        "docs": "https://ladushky.github.io/Calculator/",
+        "issues": "https://github.com/ladushky/Calculator/issues",
+        "rss": "https://github.com/ladushky/Calculator/releases.atom",
+        "source": "https://github.com/ladushky/Calculator.git",
+        "wiki": "https://github.com/ladushky/Calculator/wiki"
+    },
+    "require": {
+        "php": "^7.3",
+        "squizlabs/php_codesniffer": "^3.4"
+    },
+    "require-dev": {
+        "jakub-onderka/php-parallel-lint": "^1",
+        "mockery/mockery": "^1",
+        "phpstan/phpstan": "^0.11",
+        "phpstan/phpstan-mockery": "^0.11",
+        "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Test\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": "parallel-lint src tests",
+        "phpcs": "phpcs src tests --standard=psr12 -sp --colors",
+        "phpstan": [
+            "phpstan analyse src -c phpstan.neon --level max --no-progress",
+            "phpstan analyse tests -c phpstan.neon --level 4 --no-progress"
+        ],
+        "phpunit": "phpunit --verbose --colors=always",
+        "phpunit-ci": "phpunit --verbose --coverage-clover build/logs/clover.xml",
+        "phpunit-coverage": "phpunit --verbose --colors=always --coverage-html build/coverage",
+        "fix": [
+            "vendor/bin/phpcbf src/",
+            "vendor/bin/phpcbf tests/"
+        ],
+        "test": [
+            "@lint",
+            "@phpcs",
+            "@phpstan",
+            "@phpunit"
+        ],
+        "test-ci": [
+            "@lint",
+            "@phpcs",
+            "@phpstan",
+            "@phpunit-ci"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
