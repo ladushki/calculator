@@ -11,7 +11,7 @@ class Multiply extends OperationAbstract implements OperationInterface
 {
     public function execute(): float
     {
-        $this->validateOperands();
+        $this->checkOperands();
 
         $result = array_reduce($this->getOperands(), static function ($left, $right) {
             if ($left !== null && $right !== null) {

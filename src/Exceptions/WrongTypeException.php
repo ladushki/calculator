@@ -16,6 +16,6 @@ namespace App\Exceptions;
 /**
  * A general exception for ladushky/Calculator.
  */
-class CalculatorException extends \Exception
+class WrongTypeException extends \Exception
 {
 }

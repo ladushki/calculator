@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Exceptions\CalculatorException;
+
 /**
  * Calculator
  */
@@ -41,6 +43,10 @@ class Calculator
     protected $result;
 
 
+    /**Set operation.
+     *
+     * @param OperationInterface $operation
+     */
     public function setOperation(OperationInterface $operation): void
     {
         $this->operations[] = $operation;
@@ -60,10 +66,14 @@ class Calculator
 
     /**
      * @return Calculator
+     * @throws CalculatorException
      */
     public function calculate(): Calculator
     {
-        if (is_array($this->operations) && count($this->operations) > 0) {
+        if (empty($this->operations)) {
+            throw new CalculatorException('Please provide at least one of the operations: +, -,/,*');
+        }
+        if (is_array($this->operations) && count($this->operations) > 1) {
             $this->result = array_map(static function (OperationInterface $item) {
                 return $item->execute();
             }, $this->operations);
@@ -74,18 +84,36 @@ class Calculator
         return $this;
     }
 
+
     /**
+     * Returns result for the operation by order number.
+     *
      * @param int $index
      *
      * @return float
+     * @throws CalculatorException
      */
     public function getResult(int $index = 1): float
     {
-        return $this->result[$index - 1];
+        $cnt = count($this->result);
+
+        $i = $index < 1 ? 1 : $index - 1;
+
+        if ($cnt === 1) {
+            $i = 0;
+        }
+        if (!isset($this->result[$i])) {
+
+            throw new CalculatorException('There is no result for the operation (' . $cnt . ')');
+        }
+
+        return $this->result[$i];
     }
 
 
     /**
+     * Returns results.
+     *
      * @return array
      */
     public function getResults(): array

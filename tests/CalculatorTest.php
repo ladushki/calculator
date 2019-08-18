@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Test;
 
 use App\Calculator;
+use App\Exceptions\CalculatorException;
 use App\Operations\Add;
 
 class CalculatorTest extends TestCase
@@ -15,6 +16,30 @@ class CalculatorTest extends TestCase
     {
         parent::setUp();
         $this->calculator = new Calculator();
+    }
+
+    public function testExceptionIfNoOperationIsSet(): void
+    {
+        $this->expectException(CalculatorException::class);
+
+        $addOperator = new Add();
+        $addOperator->setOperands([1, 2]);
+
+        $this->calculator->calculate()->getResult();
+    }
+
+    public function testExceptionGetResultForWrongOperationNumber(): void
+    {
+        $this->expectException(CalculatorException::class);
+        $addOperator = new Add();
+        $addOperator->setOperands([1, 2]);
+
+        $addOperator1 = new Add();
+        $addOperator1->setOperands([1, 2, 3]);
+
+        $this->calculator->setOperations([$addOperator, $addOperator1]);
+
+        $this->calculator->calculate()->getResult(3);
     }
 
     public function testCanSetOperation(): void
@@ -40,9 +65,10 @@ class CalculatorTest extends TestCase
         $this->assertCount(2, $this->calculator->getOperations());
 
         $this->assertEquals(3, $this->calculator->calculate()->getResult(1));
+        $this->assertEquals(6, $this->calculator->calculate()->getResult(2));
     }
 
-    public function testAllOperationsAreOprationInterface(): void
+    public function testAllOperationsAreOperationInterface(): void
     {
         $operation1 = new Add();
         $this->calculator->setOperations([$operation1, 'add']);
@@ -58,6 +84,7 @@ class CalculatorTest extends TestCase
         $this->calculator->setOperations([$addOperator]);
 
         $this->assertCount(1, $this->calculator->calculate()->getResults());
+        $this->assertEquals(3, $this->calculator->getResult());
     }
 
     public function testMakeMoreCalculations(): void
@@ -75,5 +102,14 @@ class CalculatorTest extends TestCase
 
         $this->assertEquals(3, $this->calculator->getResult(1));
         $this->assertEquals(6, $this->calculator->getResult(2));
+    }
+
+    public function testGetResults()
+    {
+        $addOperator = new Add();
+        $addOperator->setOperands([1, 2]);
+
+        $this->calculator->setOperations([$addOperator])->calculate();
+        $this->assertNotEmpty($this->calculator->getResults());
     }
 }

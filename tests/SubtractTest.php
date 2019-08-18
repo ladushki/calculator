@@ -18,8 +18,14 @@ class SubtractTest extends TestCase
 
     public function testSubtracts(): void
     {
-        $this->operation->setOperands([5, 6]);
-        $this->assertEquals(-1, $this->operation->execute());
+        $this->operation->setOperands([5, 6, 1]);
+        $this->assertEquals(-2, $this->operation->execute());
+    }
+
+    public function testThrowExceptionNoOperandsOnNull(): void
+    {
+        $this->expectException(\App\Exceptions\NoOperandsException::class);
+        $this->operation->setOperands([5]);
     }
 
     public function testThrowExceptionNoOperands(): void
