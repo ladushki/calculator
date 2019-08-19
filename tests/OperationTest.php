@@ -2,12 +2,12 @@
 
 namespace App\Test;
 
-use App\Exception\NoOperandsException;
+use App\Exceptions\NoOperandsException;
 use App\Exceptions\WrongTypeException;
 use App\Operations\Add;
 use PHPUnit\Framework\TestCase;
 
-class AddTest extends TestCase
+class OperationTest extends TestCase
 {
 
     private $operation;
@@ -17,23 +17,25 @@ class AddTest extends TestCase
         $this->operation = new Add();
     }
 
-    public function testAddsUp(): void
-    {
-        $this->operation->setOperands([5,6]);
-        $this->assertEquals(11, $this->operation->execute());
-    }
 
     public function testThrowExceptionNoOperands(): void
     {
-        $this->expectException(\App\Exceptions\NoOperandsException::class);
+        $this->expectException(NoOperandsException::class);
         $this->operation->execute();
     }
 
-    public function testWrongOperandThrowException(): void
+    public function testWrongOperandTypeThrowException(): void
     {
         $this->expectException(WrongTypeException::class);
 
         $this->operation->setOperands(['test', 1, 2]);
+    }
+
+    public function testNullOperandThrowException(): void
+    {
+        $this->expectException(NoOperandsException::class);
+
+        $this->operation->setOperands([1, null]);
     }
 
     public function testSetOperands(): void
